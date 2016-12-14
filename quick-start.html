@@ -29,7 +29,7 @@
   <meta name="description" content="Getting started guide to get you up and running.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/github.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
-  <link rel="stylesheet" href="css/app.css?v=1481568810512">
+  <link rel="stylesheet" href="css/app.css?v=1481711299497">
 
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,600' rel='stylesheet' type='text/css'>
 
@@ -112,6 +112,47 @@
 <div class="alert alert-info">Note that there isn&#x2019;t a direct correlation between the number of posts or products in WordPress and the number of records in Algolia. Also note that we only offer support to paying plans. On average, you can expect to have about 10 times more records than you have posts, though this is not a golden rule and you could end up with more records.</div>
 
 
+<h2 id="installation"><a class="heading-anchor" href="#installation"><span></span></a>Installation</h2>
+<p>For the Algolia plugin for WooCommerce to work you will need have the following plugins installed:</p>
+<ul>
+<li>Algolia search: <a href="https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/">https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/</a></li>
+<li>WooCommerce: <a href="https://wordpress.org/plugins/woocommerce/">https://wordpress.org/plugins/woocommerce/</a></li>
+</ul>
+<p>Once that is the case, you can install the Algolia plugin for WooCommerce.</p>
+<p>If you need further help with the installation process, please give the <a href="https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/installation/">installation guide</a> a try.</p>
+<h2 id="create-an-algolia-account"><a class="heading-anchor" href="#create-an-algolia-account"><span></span></a>Create an Algolia account</h2>
+<p>If you haven&apos;t got an Algolia account, now is a good time to create one by subscribing <a href="https://www.algolia.com/users/sign_up">here</a>.</p>
+<div class="alert alert-info">You don&apos;t need to push your data as suggested in the onboarding tutorial as this plugin will handle it for you.</div>
+
+<h2 id="fill-in-your-algolia-credentials"><a class="heading-anchor" href="#fill-in-your-algolia-credentials"><span></span></a>Fill in your Algolia credentials</h2>
+<p>Now that your Algolia account is created, head to the <code>API keys</code> page:</p>
+<p><img src="img/quick-start/api-keys.png" alt="API keys"></p>
+<p>In your WordPress admin panel, head to the Algolia Search link in the left sidebar:</p>
+<p><img src="img/quick-start/algolia-search-menu-entry.png" alt="Algolia search menu entry"></p>
+<p>Copy the API keys from the Algolia website to your website instance and hit the <span class="wp-btn">Save changes</span> button.</p>
+<h2 id="index-products"><a class="heading-anchor" href="#index-products"><span></span></a>Index products</h2>
+<p>The Algolia Search menu in the left sidebar should now be expanded:</p>
+<p><img src="img/quick-start/expanded-menu.png" alt="Algolia search expanded menu"></p>
+<p>Head to the indexing page, check the <code>Products [posts_product]</code> index and hit the <span class="wp-btn">Save changes</span>.</p>
+<p>This will trigger the indexing of the products. While this is taking place you can continue the configuration of the plugin because indexing is done in the background.</p>
+<h2 id="choose-on-what-pages-to-display-the-instant-search-experience"><a class="heading-anchor" href="#choose-on-what-pages-to-display-the-instant-search-experience"><span></span></a>Choose on what pages to display the instant search experience</h2>
+<p>Head to the WooCommerce menu entry of the Algolia Search plugin:</p>
+<p><img src="img/quick-start/pages-screen.png" alt="Algolia search expanded menu"></p>
+<p>Choose on what page types you want to inject the search on and hit the <span class="wp-btn">Save changes</span>.</p>
+<h2 id="choose-where-to-inject-your-search-inside-of-the-pages"><a class="heading-anchor" href="#choose-where-to-inject-your-search-inside-of-the-pages"><span></span></a>Choose where to inject your search inside of the pages</h2>
+<p>The plugin requires a CSS selector to be able to determine where to inject the search inside of the pages.</p>
+<p>To make this process as simple as possible, on the <code>Zoning</code> page we load the first category of your website so that you simply have to click on the area where you&apos;d like to see the search injected.</p>
+<div class="alert alert-info">Please note that sometimes you will need to manually adjust the detected selector depending on how your theme&apos;s HTML is structured.</div>
+
+<p>Once you chose your selector, you can hit the <span class="wp-btn">Save changes</span>.</p>
+<div class="alert alert-info">You&apos;ll get a notification in the frontend if the selector you configured does not match any element. This notification only displays if you are the admin.</div>
+
+<h2 id="customize-the-appearance"><a class="heading-anchor" href="#customize-the-appearance"><span></span></a>Customize the appearance</h2>
+<p>Finally head to the <code>Appearance</code> tab:</p>
+<p><img src="img/quick-start/appearance-screen.png" alt="Appearance screen"></p>
+<p>Select a color that matches your theme and hit the <span class="wp-btn">Save changes</span>.</p>
+<p>This will automatically change the color of all search UI components on your website:</p>
+<p><img src="img/quick-start/search-ui.png" alt="Search UI"></p>
 
                 </div>
             </div>
@@ -162,7 +203,7 @@
   <a class="ac-footer-btn ac-footer-btn-cta" href="https://community.algolia.com/">See More</a>
   <span class="ac-icon ac-icon-love-dark"></span>
 </div>
-<p class="ac-footer-version">Latest version: 0.0.2</p>
+<p class="ac-footer-version">Latest version: 0.3.0</p>
 <div class="ac-footer-actions">
     <div class="footer-container">
       <p>Build unique search experiences with Algolia</p>
@@ -299,8 +340,8 @@
 </svg>
 <script src="deps/jquery/jquery.js"></script>
 <script src="deps/foundation-sites/foundation.js"></script>
-<script src="js/app.js?v=1481568810512"></script>
-<script src="js/responsiveNavigation.js?v=1481568810512"></script>
+<script src="js/app.js?v=1481711299497"></script>
+<script src="js/responsiveNavigation.js?v=1481711299497"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script src="https://cdn.jsdelivr.net/lodash/4.16.2/lodash.min.js"></script>
 

@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Algolia search for WooCommerce quick start</title>
+  <title>Frequently asked questions</title>
   <meta content="IE=edge" http-equiv="X-UA-Compatible">
   <meta charset="utf-8">
   <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 
-  <meta content='Getting started guide to get you up and running.' name='description'>
+  <meta content='Common questions and answers about the Algolia plugin for WooCommerce.' name='description'>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
   <!-- / Twitter card -->
   <meta content='summary_large_image' name='twitter:card'>
   <meta content='@Algolia' name='twitter:site'>
   <meta content='@Algolia' name='twitter:creator'>
-  <meta content="Algolia search for WooCommerce quick start - Algolia Search plugin for WooCommerce" name="twitter:title">
-  <meta content="Getting started guide to get you up and running." name="twitter:description">
+  <meta content="Frequently asked questions - Algolia Search plugin for WooCommerce" name="twitter:title">
+  <meta content="Common questions and answers about the Algolia plugin for WooCommerce." name="twitter:description">
   <meta content="https://community.algolia.com/woocommerce/img/og-screen.png" name="twitter:image">
   <!--meta content="Algolia Product image" name="twitter:image"-->
   <!-- / OG meta -->
   <meta content='https://community.algolia.com/woocommerce/' property='og:url'>
   <meta content='https://community.algolia.com/woocommerce/img/og-screen.png' property='og:image'>
-  <meta content='Algolia search for WooCommerce quick start - Algolia Search plugin for WooCommerce' property='og:title'>
+  <meta content='Frequently asked questions - Algolia Search plugin for WooCommerce' property='og:title'>
   <meta content='article' property='og:type'>
-  <meta content='Getting started guide to get you up and running.' property='og:description'>
+  <meta content='Common questions and answers about the Algolia plugin for WooCommerce.' property='og:description'>
   <meta content='Algolia Search plugin for WooCommerce' property='og:site_name'>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <meta name="description" content="Getting started guide to get you up and running.">
+  <meta name="description" content="Common questions and answers about the Algolia plugin for WooCommerce.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/github.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
   <link rel="stylesheet" href="css/app.css?v=1483966638224">
@@ -98,68 +98,59 @@
             </div-->
 
             <header>
-                <h1>Algolia search for WooCommerce quick start</h1>
+                <h1>Frequently asked questions</h1>
 
-                <p class="lead">Getting started guide to get you up and running.</p>
+                <p class="lead">Common questions and answers about the Algolia plugin for WooCommerce.</p>
             </header>
 
             <hr>
 
             <div class="row">
                 <div class="large-12 columns" id="content">
-                    <h2 id="about-the-pricing"><a class="heading-anchor" href="#about-the-pricing"><span></span></a>About the pricing</h2>
-<p>This plugin relies on the Algolia service which requires you to create an account <a href="https://www.algolia.com/users/sign_up">here</a>. Algolia offers its Search as a Service provider on a incremental payment program, including a free Hacker Plan which includes 10,000 records &amp; 100,000 operations per month. Beyond that, plans start at $49/month.</p>
-<div class="alert alert-info">Note that there isn&#x2019;t a direct correlation between the number of posts or products in WordPress and the number of records in Algolia. Also note that we only offer support to paying plans. On average, you can expect to have about 10 times more records than you have posts, though this is not a golden rule and you could end up with more records.</div>
+                    <h2 id="remove-some-sorting-options"><a class="heading-anchor" href="#remove-some-sorting-options"><span></span></a>Remove some sorting options</h2>
+<p>By default the plugin will create as many Algolia indices as there are sorting options in WooCommerce. To understand why, please read <a href="https://www.algolia.com/doc/guides/relevance/sorting/#multiple-sorting-strategies">this guide</a>.</p>
+<p>If you don&apos;t want to let your users to be able to sort on some criterion you need to remove the sorting option directly from WooCommerce.</p>
+<p>To do so, add the following to the <code>functions.php</code> of your theme or add it to a custom plugin:</p>
+<pre><code class="hljs php"><span class="hljs-preprocessor">&lt;?php</span>
+add_filter( <span class="hljs-string">&apos;woocommerce_catalog_orderby&apos;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( <span class="hljs-variable">$wc_options</span> )</span> </span>{
+        <span class="hljs-comment">// Adjust this array and only keep the sorting options you don&apos;t want to keep.</span>
+    <span class="hljs-variable">$remove_sort_options</span> = <span class="hljs-keyword">array</span>(
+        <span class="hljs-string">&apos;popularity&apos;</span>,
+        <span class="hljs-string">&apos;rating&apos;</span>,
+        <span class="hljs-string">&apos;date&apos;</span>,
+        <span class="hljs-string">&apos;price&apos;</span>,
+        <span class="hljs-string">&apos;price-desc&apos;</span>,
+    );
+    <span class="hljs-keyword">foreach</span> ( <span class="hljs-variable">$remove_sort_options</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$option</span> ) {
+        <span class="hljs-keyword">if</span> ( <span class="hljs-keyword">isset</span>( <span class="hljs-variable">$wc_options</span>[<span class="hljs-variable">$option</span>] ) ) {
+            <span class="hljs-keyword">unset</span>( <span class="hljs-variable">$wc_options</span>[<span class="hljs-variable">$option</span>] );
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-variable">$wc_options</span>;
+} );</code></pre>
 
+<div class="alert alert-warning">Once this code has been injected, you will need to manually delete the indices that are no longer used from the Algolia dashboard.</div>
+<div class="alert alert-warning">If you include a sorting option that was previously excluded, you will need to do a full re-index to ensure de sorting index replicas are created properly in Algolia.</div>
 
-<h2 id="installation"><a class="heading-anchor" href="#installation"><span></span></a>Installation</h2>
-<p>For the Algolia plugin for WooCommerce to work you will need have the following plugins installed:</p>
-<ul>
-<li>Algolia search: <a href="https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/">https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/</a></li>
-<li>WooCommerce: <a href="https://wordpress.org/plugins/woocommerce/">https://wordpress.org/plugins/woocommerce/</a></li>
-</ul>
-<p>Once that is the case, you can install the Algolia plugin for WooCommerce.</p>
-<p>If you need further help with the installation process, please give the <a href="https://wordpress.org/plugins/search-by-algolia-instant-relevant-results/installation/">installation guide</a> a try.</p>
-<h2 id="create-an-algolia-account"><a class="heading-anchor" href="#create-an-algolia-account"><span></span></a>Create an Algolia account</h2>
-<p>If you haven&apos;t got an Algolia account, now is a good time to create one by subscribing <a href="https://www.algolia.com/users/sign_up">here</a>.</p>
-<div class="alert alert-info">You don&apos;t need to push your data as suggested in the onboarding tutorial as this plugin will handle it for you.</div>
+<h2 id="can-i-make-it-so-that-the-search-replaces-the-content-dynamically-on-every-page-"><a class="heading-anchor" href="#can-i-make-it-so-that-the-search-replaces-the-content-dynamically-on-every-page-"><span></span></a>Can I make it so that the search replaces the content dynamically on every page?</h2>
+<p>Yes; here is the code you should add to your <code>functions.php</code> file of your theme or in a plugin:</p>
+<pre><code class="hljs php"><span class="hljs-comment">// Ensures instantsearch.js search experience is injected on every page regardless</span>
+<span class="hljs-comment">// of the configuration on the &apos;Algolia Search -&gt; WooCommerce -&gt; Pages&apos; admin page.</span>
+add_filter( <span class="hljs-string">&apos;algolia_wc_should_display_instantsearch&apos;</span>, <span class="hljs-string">&apos;__return_true&apos;</span> );</code></pre>
 
-<h2 id="fill-in-your-algolia-credentials"><a class="heading-anchor" href="#fill-in-your-algolia-credentials"><span></span></a>Fill in your Algolia credentials</h2>
-<p>Now that your Algolia account is created, head to the <code>API keys</code> page:</p>
-<p><img src="img/quick-start/api-keys.png" alt="API keys"></p>
-<p>In your WordPress admin panel, head to the Algolia Search link in the left sidebar:</p>
-<p><img src="img/quick-start/algolia-search-menu-entry.png" alt="Algolia search menu entry"></p>
-<p>Copy the API keys from the Algolia website to your website instance and hit the <span class="wp-btn">Save changes</span> button.</p>
-<h2 id="index-products"><a class="heading-anchor" href="#index-products"><span></span></a>Index products</h2>
-<p>The Algolia Search menu in the left sidebar should now be expanded:</p>
-<p><img src="img/quick-start/expanded-menu.png" alt="Algolia search expanded menu"></p>
-<p>Head to the indexing page, check the <code>Products [posts_product]</code> index and hit the <span class="wp-btn">Save changes</span>.</p>
-<p>This will trigger the indexing of the products. While this is taking place you can continue the configuration of the plugin because indexing is done in the background.</p>
-<h2 id="choose-on-what-pages-to-display-the-instant-search-experience"><a class="heading-anchor" href="#choose-on-what-pages-to-display-the-instant-search-experience"><span></span></a>Choose on what pages to display the instant search experience</h2>
-<p>Head to the WooCommerce menu entry of the Algolia Search plugin:</p>
-<p><img src="img/quick-start/pages-screen.png" alt="Algolia search expanded menu"></p>
-<p>Choose on what page types you want to inject the search on and hit the <span class="wp-btn">Save changes</span>.</p>
-<h2 id="choose-where-to-inject-your-search-inside-of-the-pages"><a class="heading-anchor" href="#choose-where-to-inject-your-search-inside-of-the-pages"><span></span></a>Choose where to inject your search inside of the pages</h2>
-<p>The plugin requires a CSS selector to be able to determine where to inject the search inside of the pages.</p>
-<p>To make this process as simple as possible, on the <code>Zoning</code> page we load the first category of your website so that you simply have to click on the area where you&apos;d like to see the search injected.</p>
-<div class="alert alert-info">Please note that sometimes you will need to manually adjust the detected selector depending on how your theme&apos;s HTML is structured.</div>
+<div class="alert alert-info">If you choose to enable instantsearch.js on every page, you will have to make sure that the selector on <code>Algolia Search -&gt; WooCommerce -&gt; Zoning</code> has a match on every page.</div>
 
-<p>Once you chose your selector, you can hit the <span class="wp-btn">Save changes</span>.</p>
-<div class="alert alert-info">You&apos;ll get a notification in the frontend if the selector you configured does not match any element. This notification only displays if you are the admin.</div>
-
-<h2 id="customize-the-appearance"><a class="heading-anchor" href="#customize-the-appearance"><span></span></a>Customize the appearance</h2>
-<p>Finally head to the <code>Appearance</code> tab:</p>
-<p><img src="img/quick-start/appearance-screen.png" alt="Appearance screen"></p>
-<p>Select a color that matches your theme and hit the <span class="wp-btn">Save changes</span>.</p>
-<p>This will automatically change the color of all search UI components on your website:</p>
-<p><img src="img/quick-start/search-ui.png" alt="Search UI"></p>
+<h2 id="can-i-customize-the-search-experience-"><a class="heading-anchor" href="#can-i-customize-the-search-experience-"><span></span></a>Can I customize the search experience?</h2>
+<p>Yes and no; Currently you can only override the CSS by applying your rules on top of ours directly in your theme.</p>
+<p>The HTML can not be overridden yet, and won&apos;t be until we release V1 of the plugin.</p>
+<p>While the Beta takes place, we don&apos;t want our users to struggle updating the plugin. Letting our users override the HTML would make the updating process harder.</p>
 
                 </div>
             </div>
 
             <ul class="menu simple text-center">
-                <li><a href="https://github.com/algolia/algoliasearch-woocommerce/edit/master/docs/src/quick-start.md" target="_blank"><i class="fi-pencil"></i> <span>Edit this Page</span></a></li>
-                <li><a href="https://github.com/algolia/algoliasearch-woocommerce/issues/new?title=%5BAlgolia search for WooCommerce quick start%5D%20ISSUE%20NAME%20HERE" target="_blank"><i class="fi-social-github"></i> <span>Report a Bug</span></a></li>
+                <li><a href="https://github.com/algolia/algoliasearch-woocommerce/edit/master/docs/src/frequently-asked-questions.md" target="_blank"><i class="fi-pencil"></i> <span>Edit this Page</span></a></li>
+                <li><a href="https://github.com/algolia/algoliasearch-woocommerce/issues/new?title=%5BFrequently asked questions%5D%20ISSUE%20NAME%20HERE" target="_blank"><i class="fi-social-github"></i> <span>Report a Bug</span></a></li>
                 <li><a href="http://stackoverflow.com/questions/tagged/algolia+woocommerce" target="_blank"><i class="fi-comment"></i> <span>Get Help</span></a></li>
             </ul>
         </article>
@@ -169,8 +160,8 @@
         <ul class="vertical menu" id="main-nav">
 
             <li class="menu-text">Getting Started</li>
-            <li class="active"><a href="quick-start.html">Quick start</a></li>
-            <li ><a href="frequently-asked-questions.html">FAQ</a></li>
+            <li ><a href="quick-start.html">Quick start</a></li>
+            <li class="active"><a href="frequently-asked-questions.html">FAQ</a></li>
 
         </ul>
     </div>

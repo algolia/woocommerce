@@ -17,6 +17,10 @@ $(function () {
     var $tweets = $('.press__tweet');
     var $tweetsContainer = $('.press__tweets');
 
+    if($tweetsContainer.length === 0) {
+        return;
+    }
+
     var currentIndex = Math.floor($tweets.length / 2);
     function setCurrentTweet(action) {
         switch (action) {

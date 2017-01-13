@@ -29,7 +29,7 @@
   <meta name="description" content="Common questions and answers about the Algolia plugin for WooCommerce.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/github.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
-  <link rel="stylesheet" href="css/app.css?v=1483966638224">
+  <link rel="stylesheet" href="css/app.css?v=1484315794120">
 
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,600' rel='stylesheet' type='text/css'>
 
@@ -107,7 +107,7 @@
 
             <div class="row">
                 <div class="large-12 columns" id="content">
-                    <h2 id="remove-some-sorting-options"><a class="heading-anchor" href="#remove-some-sorting-options"><span></span></a>Remove some sorting options</h2>
+                    <h2 id="how-to-remove-sorting-options"><a class="heading-anchor" href="#how-to-remove-sorting-options"><span></span></a>How to remove sorting options</h2>
 <p>By default the plugin will create as many Algolia indices as there are sorting options in WooCommerce. To understand why, please read <a href="https://www.algolia.com/doc/guides/relevance/sorting/#multiple-sorting-strategies">this guide</a>.</p>
 <p>If you don&apos;t want to let your users to be able to sort on some criterion you need to remove the sorting option directly from WooCommerce.</p>
 <p>To do so, add the following to the <code>functions.php</code> of your theme or add it to a custom plugin:</p>
@@ -144,6 +144,56 @@ add_filter( <span class="hljs-string">&apos;algolia_wc_should_display_instantsea
 <p>Yes and no; Currently you can only override the CSS by applying your rules on top of ours directly in your theme.</p>
 <p>The HTML can not be overridden yet, and won&apos;t be until we release V1 of the plugin.</p>
 <p>While the Beta takes place, we don&apos;t want our users to struggle updating the plugin. Letting our users override the HTML would make the updating process harder.</p>
+<h2 id="can-i-choose-the-attributes-that-are-available-in-the-filters-"><a class="heading-anchor" href="#can-i-choose-the-attributes-that-are-available-in-the-filters-"><span></span></a>Can I choose the attributes that are available in the filters?</h2>
+<p>Yes, for now you have to use a filter. You can add the following snippet to your <code>functions.php</code> theme or to a custom plugin:</p>
+<pre><code class="hljs php"><span class="hljs-preprocessor">&lt;?php</span>
+add_filter( <span class="hljs-string">&apos;algolia_wc_attributes_for_faceting&apos;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( <span class="hljs-variable">$attributes</span> )</span> </span>{
+    <span class="hljs-comment">// **Edit the values of this array**</span>
+    <span class="hljs-comment">// You should put a list of all attribute ids you wish to see in the filters.</span>
+    <span class="hljs-comment">// they will be displayed in the order they are listed here.</span>
+    <span class="hljs-variable">$attribute_ids_to_keep</span> = <span class="hljs-keyword">array</span>(
+        <span class="hljs-number">10</span>,
+        <span class="hljs-number">8</span>,
+        <span class="hljs-number">15</span>,
+    );
+
+    <span class="hljs-keyword">foreach</span> ( <span class="hljs-variable">$attributes</span> <span class="hljs-keyword">as</span> &amp;<span class="hljs-variable">$attribute</span> ) {
+        <span class="hljs-keyword">if</span> ( ! in_array( <span class="hljs-variable">$attribute</span>[<span class="hljs-string">&apos;attribute_id&apos;</span>], <span class="hljs-variable">$attribute_ids_to_keep</span>, <span class="hljs-keyword">true</span> ) ) {
+            <span class="hljs-comment">// Remove the attribute from the filters.</span>
+            <span class="hljs-variable">$attribute</span>[<span class="hljs-string">&apos;is_enabled&apos;</span>] = <span class="hljs-keyword">false</span>;
+
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// Add the attribute to the filters.</span>
+            <span class="hljs-variable">$attribute</span>[<span class="hljs-string">&apos;is_enabled&apos;</span>] = <span class="hljs-keyword">true</span>;
+
+            <span class="hljs-comment">// Order the filter.</span>
+            <span class="hljs-variable">$attribute</span>[<span class="hljs-string">&apos;weight&apos;</span>] = array_search( <span class="hljs-variable">$attribute</span>[<span class="hljs-string">&apos;attribute_id&apos;</span>], <span class="hljs-variable">$attribute_ids_to_keep</span>, <span class="hljs-keyword">true</span> );
+        }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-variable">$attributes</span>;
+} );</code></pre>
+
+<p>This code will make sure only attributes with ids <code>10, 8, 15</code> are displayed as a filter option.</p>
+<div class="alert alert-info">The order of the ids in the array matters, and the attributes will be displayed as filters in the exact same order.</div>
+
+<p>There is no need to re-index your data to apply this change.</p>
+<h2 id="my-search-input-doesn-t-redirect-to-the-products-search-page"><a class="heading-anchor" href="#my-search-input-doesn-t-redirect-to-the-products-search-page"><span></span></a>My search input doesn&apos;t redirect to the products search page</h2>
+<p>By default, the product search page should by available via the following URL: <code>/s=&amp;post_type=product</code>.</p>
+<p>Often, themes ship a search input that actually submits the query to <code>/s=</code>, in which case the Algolia search for WooCommerce isn&apos;t triggered.</p>
+<p><strong>If the input is injected in the theme with a widget</strong></p>
+<p>You can replace the <code>Search</code> widget with the <code>WooCommerce Product Search</code> widget.</p>
+<p><strong>If the input is built-into your theme</strong></p>
+<p>You need to find and edit the file where the input is declared, and add the following line just after the input and before the <code>&lt;/form&gt;</code> tag:</p>
+<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">&quot;hidden&quot;</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">&quot;post_type&quot;</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">&quot;product&quot;</span>&gt;</span></code></pre>
+
+
+
+
+
+
+
+
 
                 </div>
             </div>
@@ -161,6 +211,7 @@ add_filter( <span class="hljs-string">&apos;algolia_wc_should_display_instantsea
 
             <li class="menu-text">Getting Started</li>
             <li ><a href="quick-start.html">Quick start</a></li>
+            <li ><a href="customize.html">Customization</a></li>
             <li class="active"><a href="frequently-asked-questions.html">FAQ</a></li>
 
         </ul>
@@ -168,11 +219,6 @@ add_filter( <span class="hljs-string">&apos;algolia_wc_should_display_instantsea
 
 </div>
 </div>
-
-
-<script src="deps/jquery/jquery.js"></script>
-<script src="deps/foundation-sites/foundation.js"></script>
-<script src="js/doc.js"></script>
 
 <section class="ac-footer">
   <div class="ac-footer-container">
@@ -330,10 +376,9 @@ add_filter( <span class="hljs-string">&apos;algolia_wc_should_display_instantsea
 </symbol>
 </defs>
 </svg>
-<script src="deps/jquery/jquery.js"></script>
-<script src="deps/foundation-sites/foundation.js"></script>
-<script src="js/app.js?v=1483966638224"></script>
-<script src="js/responsiveNavigation.js?v=1483966638224"></script>
+<script src="deps/jquery/jquery.min.js"></script>
+<script src="js/app.js?v=1484315794120"></script>
+<script src="js/responsiveNavigation.js?v=1484315794120"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script src="https://cdn.jsdelivr.net/lodash/4.16.2/lodash.min.js"></script>
 

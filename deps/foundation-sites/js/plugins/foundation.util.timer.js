@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 105);
+/******/ 	return __webpack_require__(__webpack_require__.s = 106);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -82,97 +82,86 @@ module.exports = {Foundation: window.Foundation};
 
 /***/ }),
 
-/***/ 105:
+/***/ 106:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(39);
+module.exports = __webpack_require__(40);
 
 
 /***/ }),
 
-/***/ 39:
+/***/ 40:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__foundation_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__foundation_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__foundation_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__foundation_util_nest__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__foundation_util_timer__ = __webpack_require__(70);
 
 
 
 
-__WEBPACK_IMPORTED_MODULE_0__foundation_core__["Foundation"].Nest = __WEBPACK_IMPORTED_MODULE_1__foundation_util_nest__["a" /* Nest */];
+__WEBPACK_IMPORTED_MODULE_0__foundation_core__["Foundation"].Timer = __WEBPACK_IMPORTED_MODULE_1__foundation_util_timer__["a" /* Timer */];
 
 /***/ }),
 
-/***/ 69:
+/***/ 70:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Nest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Timer; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 
 
 
 
-var Nest = {
-  Feather: function (menu) {
-    var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'zf';
+function Timer(elem, options, cb) {
+  var _this = this,
+      duration = options.duration,
+      //options is an object for easily adding features later.
+  nameSpace = Object.keys(elem.data())[0] || 'timer',
+      remain = -1,
+      start,
+      timer;
 
-    menu.attr('role', 'menubar');
+  this.isPaused = false;
 
-    var items = menu.find('li').attr({ 'role': 'menuitem' }),
-        subMenuClass = 'is-' + type + '-submenu',
-        subItemClass = subMenuClass + '-item',
-        hasSubClass = 'is-' + type + '-submenu-parent',
-        applyAria = type !== 'accordion'; // Accordions handle their own ARIA attriutes.
+  this.restart = function () {
+    remain = -1;
+    clearTimeout(timer);
+    this.start();
+  };
 
-    items.each(function () {
-      var $item = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this),
-          $sub = $item.children('ul');
-
-      if ($sub.length) {
-        $item.addClass(hasSubClass);
-        $sub.addClass('submenu ' + subMenuClass).attr({ 'data-submenu': '' });
-        if (applyAria) {
-          $item.attr({
-            'aria-haspopup': true,
-            'aria-label': $item.children('a:first').text()
-          });
-          // Note:  Drilldowns behave differently in how they hide, and so need
-          // additional attributes.  We should look if this possibly over-generalized
-          // utility (Nest) is appropriate when we rework menus in 6.4
-          if (type === 'drilldown') {
-            $item.attr({ 'aria-expanded': false });
-          }
-        }
-        $sub.addClass('submenu ' + subMenuClass).attr({
-          'data-submenu': '',
-          'role': 'menu'
-        });
-        if (type === 'drilldown') {
-          $sub.attr({ 'aria-hidden': true });
-        }
+  this.start = function () {
+    this.isPaused = false;
+    // if(!elem.data('paused')){ return false; }//maybe implement this sanity check if used for other things.
+    clearTimeout(timer);
+    remain = remain <= 0 ? duration : remain;
+    elem.data('paused', false);
+    start = Date.now();
+    timer = setTimeout(function () {
+      if (options.infinite) {
+        _this.restart(); //rerun the timer.
       }
-
-      if ($item.parent('[data-submenu]').length) {
-        $item.addClass('is-submenu-item ' + subItemClass);
+      if (cb && typeof cb === 'function') {
+        cb();
       }
-    });
+    }, remain);
+    elem.trigger('timerstart.zf.' + nameSpace);
+  };
 
-    return;
-  },
-  Burn: function (menu, type) {
-    var //items = menu.find('li'),
-    subMenuClass = 'is-' + type + '-submenu',
-        subItemClass = subMenuClass + '-item',
-        hasSubClass = 'is-' + type + '-submenu-parent';
-
-    menu.find('>li, .menu, .menu > li').removeClass(subMenuClass + ' ' + subItemClass + ' ' + hasSubClass + ' is-submenu-item submenu is-active').removeAttr('data-submenu').css('display', '');
-  }
-};
+  this.pause = function () {
+    this.isPaused = true;
+    //if(elem.data('paused')){ return false; }//maybe implement this sanity check if used for other things.
+    clearTimeout(timer);
+    elem.data('paused', true);
+    var end = Date.now();
+    remain = remain - (end - start);
+    elem.trigger('timerpaused.zf.' + nameSpace);
+  };
+}
 
 
 

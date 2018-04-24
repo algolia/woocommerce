@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 105);
+/******/ 	return __webpack_require__(__webpack_require__.s = 101);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -82,97 +82,79 @@ module.exports = {Foundation: window.Foundation};
 
 /***/ }),
 
-/***/ 105:
+/***/ 101:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(39);
+module.exports = __webpack_require__(35);
 
 
 /***/ }),
 
-/***/ 39:
+/***/ 35:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__foundation_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__foundation_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__foundation_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__foundation_util_nest__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__foundation_util_imageLoader__ = __webpack_require__(65);
 
 
 
 
-__WEBPACK_IMPORTED_MODULE_0__foundation_core__["Foundation"].Nest = __WEBPACK_IMPORTED_MODULE_1__foundation_util_nest__["a" /* Nest */];
+__WEBPACK_IMPORTED_MODULE_0__foundation_core__["Foundation"].onImagesLoaded = __WEBPACK_IMPORTED_MODULE_1__foundation_util_imageLoader__["a" /* onImagesLoaded */];
 
 /***/ }),
 
-/***/ 69:
+/***/ 65:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Nest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return onImagesLoaded; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 
 
 
 
-var Nest = {
-  Feather: function (menu) {
-    var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'zf';
+/**
+ * Runs a callback function when images are fully loaded.
+ * @param {Object} images - Image(s) to check if loaded.
+ * @param {Func} callback - Function to execute when image is fully loaded.
+ */
+function onImagesLoaded(images, callback) {
+  var self = this,
+      unloaded = images.length;
 
-    menu.attr('role', 'menubar');
-
-    var items = menu.find('li').attr({ 'role': 'menuitem' }),
-        subMenuClass = 'is-' + type + '-submenu',
-        subItemClass = subMenuClass + '-item',
-        hasSubClass = 'is-' + type + '-submenu-parent',
-        applyAria = type !== 'accordion'; // Accordions handle their own ARIA attriutes.
-
-    items.each(function () {
-      var $item = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this),
-          $sub = $item.children('ul');
-
-      if ($sub.length) {
-        $item.addClass(hasSubClass);
-        $sub.addClass('submenu ' + subMenuClass).attr({ 'data-submenu': '' });
-        if (applyAria) {
-          $item.attr({
-            'aria-haspopup': true,
-            'aria-label': $item.children('a:first').text()
-          });
-          // Note:  Drilldowns behave differently in how they hide, and so need
-          // additional attributes.  We should look if this possibly over-generalized
-          // utility (Nest) is appropriate when we rework menus in 6.4
-          if (type === 'drilldown') {
-            $item.attr({ 'aria-expanded': false });
-          }
-        }
-        $sub.addClass('submenu ' + subMenuClass).attr({
-          'data-submenu': '',
-          'role': 'menu'
-        });
-        if (type === 'drilldown') {
-          $sub.attr({ 'aria-hidden': true });
-        }
-      }
-
-      if ($item.parent('[data-submenu]').length) {
-        $item.addClass('is-submenu-item ' + subItemClass);
-      }
-    });
-
-    return;
-  },
-  Burn: function (menu, type) {
-    var //items = menu.find('li'),
-    subMenuClass = 'is-' + type + '-submenu',
-        subItemClass = subMenuClass + '-item',
-        hasSubClass = 'is-' + type + '-submenu-parent';
-
-    menu.find('>li, .menu, .menu > li').removeClass(subMenuClass + ' ' + subItemClass + ' ' + hasSubClass + ' is-submenu-item submenu is-active').removeAttr('data-submenu').css('display', '');
+  if (unloaded === 0) {
+    callback();
   }
-};
+
+  images.each(function () {
+    // Check if image is loaded
+    if (this.complete && this.naturalWidth !== undefined) {
+      singleImageLoaded();
+    } else {
+      // If the above check failed, simulate loading on detached element.
+      var image = new Image();
+      // Still count image as loaded if it finalizes with an error.
+      var events = "load.zf.images error.zf.images";
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()(image).one(events, function me(event) {
+        // Unbind the event listeners. We're using 'one' but only one of the two events will have fired.
+        __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).off(events, me);
+        singleImageLoaded();
+      });
+      image.src = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr('src');
+    }
+  });
+
+  function singleImageLoaded() {
+    unloaded--;
+    if (unloaded === 0) {
+      callback();
+    }
+  }
+}
 
 
 
